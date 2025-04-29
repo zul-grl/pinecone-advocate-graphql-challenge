@@ -11,9 +11,7 @@ export const taskQueries = {
       const tasks = await Task.find({
         userId,
         isDone: true,
-      })
-        .sort({ createdAt: -1 })
-        .exec();
+      }).exec();
 
       if (!tasks) {
         throw new Error("No tasks found");

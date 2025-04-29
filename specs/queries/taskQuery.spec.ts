@@ -32,12 +32,9 @@ describe("Task Queries", () => {
         },
       ];
 
-      const mockFind = {
-        sort: jest.fn().mockReturnThis(),
+      Task.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(mockTasks),
-      };
-
-      Task.find = jest.fn().mockReturnValue(mockFind);
+      });
 
       const result = await taskQueries.getUserDoneTasksLists(null, {
         userId: "user123",
@@ -48,7 +45,6 @@ describe("Task Queries", () => {
         userId: "user123",
         isDone: true,
       });
-      expect(mockFind.sort).toHaveBeenCalledWith({ createdAt: -1 });
       expect(result).toEqual(mockTasks);
       expect(result.length).toBe(2);
     });
@@ -63,11 +59,9 @@ describe("Task Queries", () => {
 
     it("should handle no tasks found", async () => {
       User.findById = jest.fn().mockResolvedValue({ _id: "user123" });
-      const mockFind = {
-        sort: jest.fn().mockReturnThis(),
+      Task.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
-      };
-      Task.find = jest.fn().mockReturnValue(mockFind);
+      });
 
       await expect(
         taskQueries.getUserDoneTasksLists(null, { userId: "user123" })
@@ -87,11 +81,9 @@ describe("Task Queries", () => {
 
     it("should return empty array if no done tasks", async () => {
       User.findById = jest.fn().mockResolvedValue({ _id: "user123" });
-      const mockFind = {
-        sort: jest.fn().mockReturnThis(),
+      Task.find = jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue([]),
-      };
-      Task.find = jest.fn().mockReturnValue(mockFind);
+      });
 
       const result = await taskQueries.getUserDoneTasksLists(null, {
         userId: "user123",
