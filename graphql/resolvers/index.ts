@@ -1,4 +1,5 @@
 import { createTask } from "./mutations/createTask";
+import { createUser } from "./mutations/createUser";
 import { sayHello } from "./mutations/say-hello";
 import { updateTask } from "./mutations/updateTask";
 import { helloQuery } from "./queries/hello-query";
@@ -13,5 +14,6 @@ export const resolvers = {
     sayHello,
     createTask,
     updateTask,
+    createUser,
   },
 };

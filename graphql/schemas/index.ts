@@ -40,5 +40,6 @@ export const typeDefs = gql`
       isDone: Boolean
       tags: [String!]
     ): Task!
+    createUser(username: String!, email: String!): User!
   }
 `;
