@@ -17,10 +17,11 @@ export const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    createdAt: String!
   }
 
   type Query {
-    getUserDoneTasksLists(userId: String!): [Task!]!
+    getUserDoneTasksLists(userId: ID!): [Task!]!
   }
 
   type Mutation {
@@ -31,6 +32,7 @@ export const typeDefs = gql`
       tags: [String!]
       userId: String!
     ): Task!
+
     updateTask(
       taskId: ID!
       userId: String!
@@ -40,6 +42,7 @@ export const typeDefs = gql`
       isDone: Boolean
       tags: [String!]
     ): Task!
+
     createUser(username: String!, email: String!): User!
   }
 `;

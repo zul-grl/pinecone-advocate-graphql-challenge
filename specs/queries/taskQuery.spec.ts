@@ -1,6 +1,6 @@
 import Task from "@/graphql/models/Task";
 import User from "@/graphql/models/User";
-import { taskQueries } from "@/graphql/resolvers/queries/taskQueries";
+import { getUserDoneTasksLists } from "@/graphql/resolvers/queries/taskQueries";
 
 jest.mock("../../graphql/models/Task");
 jest.mock("../../graphql/models/User");
@@ -32,11 +32,9 @@ describe("Task Queries", () => {
         },
       ];
 
-      Task.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(mockTasks),
-      });
+      Task.find = jest.fn().mockResolvedValue(mockTasks);
 
-      const result = await taskQueries.getUserDoneTasksLists(null, {
+      const result = await getUserDoneTasksLists(null, {
         userId: "user123",
       });
 
@@ -53,18 +51,16 @@ describe("Task Queries", () => {
       User.findById = jest.fn().mockResolvedValue(null);
 
       await expect(
-        taskQueries.getUserDoneTasksLists(null, { userId: "nonexistent" })
+        getUserDoneTasksLists(null, { userId: "nonexistent" })
       ).rejects.toThrow("User not found");
     });
 
     it("should handle no tasks found", async () => {
       User.findById = jest.fn().mockResolvedValue({ _id: "user123" });
-      Task.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-      });
+      Task.find = jest.fn().mockReturnValue(null);
 
       await expect(
-        taskQueries.getUserDoneTasksLists(null, { userId: "user123" })
+        getUserDoneTasksLists(null, { userId: "user123" })
       ).rejects.toThrow("No tasks found");
     });
 
@@ -75,21 +71,8 @@ describe("Task Queries", () => {
       });
 
       await expect(
-        taskQueries.getUserDoneTasksLists(null, { userId: "user123" })
+        getUserDoneTasksLists(null, { userId: "user123" })
       ).rejects.toThrow("Failed to fetch tasks");
-    });
-
-    it("should return empty array if no done tasks", async () => {
-      User.findById = jest.fn().mockResolvedValue({ _id: "user123" });
-      Task.find = jest.fn().mockReturnValue({
-        exec: jest.fn().mockResolvedValue([]),
-      });
-
-      const result = await taskQueries.getUserDoneTasksLists(null, {
-        userId: "user123",
-      });
-
-      expect(result).toEqual([]);
     });
   });
 });

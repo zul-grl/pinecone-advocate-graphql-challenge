@@ -3,16 +3,16 @@ import { createUser } from "./mutations/createUser";
 import { sayHello } from "./mutations/say-hello";
 import { updateTask } from "./mutations/updateTask";
 import { helloQuery } from "./queries/hello-query";
-import { taskQueries } from "./queries/taskQueries";
+import { getUserDoneTasksLists } from "./queries/taskQueries";
 
 export const resolvers = {
   Query: {
     helloQuery,
-    taskQueries,
+    getUserDoneTasksLists,
   },
   Mutation: {
     sayHello,
-    createTask,
+    addTask: createTask,
     updateTask,
     createUser,
   },

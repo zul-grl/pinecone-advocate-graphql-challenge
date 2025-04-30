@@ -27,33 +27,33 @@ export const updateTask = async (
       throw new Error("User not found");
     }
 
-    const task = await Task.findById(taskId);
-    if (!task) {
+    const existingTask = await Task.findById(taskId);
+    if (!existingTask) {
       throw new Error("Task not found");
     }
 
-    const ownerMatches = task.userId === userId;
-    if (!ownerMatches) {
-      throw new Error("Unauthorized: You don't own this task");
+    if (existingTask.userId.toString() !== userId) {
+      throw new Error("Unauthorized");
     }
 
-    const updateData = {
-      updatedAt: new Date(),
-    } as any;
-
-    if (taskName !== undefined) updateData.taskName = taskName;
-    if (description !== undefined) updateData.description = description;
-    if (priority !== undefined) updateData.priority = priority;
-    if (isDone !== undefined) updateData.isDone = isDone;
-    if (tags !== undefined) updateData.tags = tags;
-
-    const finalTaskName = taskName !== undefined ? taskName : task.taskName;
-    const finalDescription =
-      description !== undefined ? description : task.description;
-
-    if (finalTaskName === finalDescription) {
+    const newTaskName = taskName ?? existingTask.taskName;
+    const newDescription = description ?? existingTask.description;
+    if (newTaskName === newDescription) {
       throw new Error("Description cannot be the same as task name");
     }
+
+    if (priority && (priority < 1 || priority > 5)) {
+      throw new Error("Priority must be between 1 and 5");
+    }
+
+    const updateData: any = {
+      ...(taskName && { taskName }),
+      ...(description && { description }),
+      ...(priority && { priority }),
+      ...(isDone !== undefined && { isDone }),
+      ...(tags && { tags }),
+      updatedAt: new Date(),
+    };
 
     const updatedTask = await Task.findByIdAndUpdate(taskId, updateData, {
       new: true,
